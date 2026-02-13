@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  @apply bg-slate-50 text-slate-900;
+}
+
+.container-page {
+  @apply mx-auto w-full max-w-4xl px-4 py-8;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+    font-size: 12px;
+  }
+
+  .print-card {
+    box-shadow: none !important;
+    border-color: #d1d5db !important;
+    break-inside: avoid;
+  }
+
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+}

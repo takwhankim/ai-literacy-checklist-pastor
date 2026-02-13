@@ -1,0 +1,15 @@
+"use client";
+
+import { COPY } from "@/lib/copy";
+
+export default function PrintButton() {
+  return (
+    <button
+      type="button"
+      onClick={() => window.print()}
+      className="no-print rounded-md bg-slate-900 px-4 py-2 text-sm font-semibold text-white"
+    >
+      {COPY.result.print}
+    </button>
+  );
+}
