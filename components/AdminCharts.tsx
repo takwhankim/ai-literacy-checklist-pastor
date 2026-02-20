@@ -55,7 +55,7 @@ export default function AdminCharts({
   const ministryData = Object.entries(ministryCounts).map(([name, count]) => ({ name, count }));
 
   return (
-    <div className="grid gap-4 md:grid-cols-2">
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       <div className="rounded-lg border border-slate-200 bg-white p-4">
         <h3 className="mb-3 text-sm font-semibold">{COPY.admin.dashboard.levelDistribution}</h3>
         <div className="h-64">
