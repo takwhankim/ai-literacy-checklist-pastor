@@ -166,8 +166,10 @@ export const COPY = {
     }
   },
   common: {
+    levelLabel: "레벨",
     copyright: "© 2026 onmam.com. All rights reserved.",
   },
-  levelLabel: "레벨"
+} as const;
+
 }
 } as const ;
