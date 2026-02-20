@@ -27,7 +27,7 @@ export const COPY = {
     churchSizeLabel: "출석교회 규모",
     churchSizeOptions: ["100명 미만", "100-499명", "500-1,999명", "2,000-9,999명", "1만명 이상"],
     regionLabel: "지역",
-    regionOptions: ["서울", "경기", "한국내"],
+    regionOptions: ["서울", "경기", "강원", "충청", "전라", "경상", "제주"],
     consentAgg: "익명 집계에 동의합니다(필수)",
     submit: "설문 시작",
     requiredError: "모든 항목을 선택해 주세요.",
