@@ -25,7 +25,7 @@ export const COPY = {
     ageLabel: "연령",
     ageOptions: ["10-20대", "30대", "40대", "50대", "60대", "70대 이상"],
     churchSizeLabel: "출석교회 규모",
-    churchSizeOptions: ["100명 미만", "100-499명", "500-1,999명", "2,000-9,999명", "1만명 이상"],
+    churchSizeOptions: ["100명 미만", "100-499명", "500-1,999명", "2,000-4,999명", "5천명 내외", "1만명 내외"],
     regionLabel: "지역",
     regionOptions: ["서울", "경기", "강원", "충청", "전라", "경상", "제주"],
     consentAgg: "익명 집계에 동의합니다(필수)",
