@@ -1,28 +1,34 @@
 export const COPY = {
   landing: {
-    title: "사역자 AI리터러시 체크리스트",
+    title: "사역자 AI 리터러시 체크",
+    subtitle: "약 5–7분 소요 · 평가가 아닌 교육 설계용 진단",
     description:
-      "이 진단은 사역자와 교사가 AI를 얼마나 이해하고 안전하게 활용하는지 확인하는 체크리스트입니다. 결과는 점수 경쟁이 아니라, 교회 교육과 훈련 계획을 세우기 위한 기초 자료로 사용되며 평가가 아닌 교육 설계용으로 약 5–7분 소요됩니다.",
-    frameworkNote: "본 체트리스트는 유네스코(UNESCO) 교사및 리더용 AI 역량 프레임워크를 기반으로 제작되었습니다.",
+      "이 진단은 사역자와 교사가 AI를 얼마나 이해하고 안전하게 활용하는지 확인하는 체크리스트입니다. 결과는 점수 경쟁이 아니라, 교회 교육과 훈련 계획을 세우기 위한 기초 자료로 사용됩니다.",
     cta: "시작하기"
   },
   start: {
     heading: "기본 정보",
-    nameLabel: "이름",
-    namePlaceholder: "홍길동",
+    intro: "아래 항목을 선택해 주세요.",
     roleLabel: "역할",
-    roleEmpty: "선택 안 함",
     roleOptions: ["목회자", "전도사", "중직사", "행정 및 미디어담당자", "교사 및 교회 봉사자", "기타"],
     ministryLabel: "사역 부서",
-    ministryPlaceholder: "예: 교육부",
+    ministryOptions: ["예배팀", "미디어팀", "새가족팀", "교육부", "선교부", "행정팀", "그외"],
+    genderLabel: "성별",
+    genderOptions: ["남", "여"],
+    ageLabel: "연령",
+    ageOptions: ["10-20대", "30대", "40대", "50대", "60대", "70대 이상"],
+    churchSizeLabel: "출석교회 규모",
+    churchSizeOptions: ["100명 미만", "100-499명", "500-1,999명", "2,000-9,999명", "1만명 이상"],
+    regionLabel: "지역",
+    regionOptions: ["서울", "경기", "한국내"],
     consentAgg: "익명 집계에 동의합니다(필수)",
     submit: "설문 시작",
-    requiredError: "이름, 역할, 사역 부서를 모두 입력해 주세요.",
+    requiredError: "모든 항목을 선택해 주세요.",
     consentError: "필수 동의 항목을 체크해 주세요.",
     submitError: "시작 처리 중 오류가 발생했습니다."
   },
   survey: {
-    heading: "사역자 AI리터러시 체크리스트",
+    heading: "사역자 AI 리터러시 설문",
     description: "1~5점 척도로 가장 가까운 항목을 선택해 주세요.",
     progressComplete: "완료",
     previous: "이전",
@@ -32,13 +38,7 @@ export const COPY = {
     submit: "제출하기",
     progress: "진행률",
     requiredError: "모든 문항에 답변해 주세요.",
-    nextRequiresAnswer: "현재 문항을 선택해야 다음으로 이동할 수 있습니다.",
-    submitError: "제출 중 오류가 발생했습니다.",
-    domainGuideTitle: "영역 안내",
-    domainGuideA: "A(이해): AI의 작동 원리, 한계, 편향을 이해하는 영역",
-    domainGuideB: "B(활용): 사역 업무에 AI를 실제로 적용하는 영역",
-    domainGuideC: "C(검증): AI 결과를 비판적으로 확인하고 교차 검증하는 영역",
-    domainGuideD: "D(윤리): 개인정보·저작권·책임 기준을 지키는 영역"
+    submitError: "제출 중 오류가 발생했습니다."
   },
   result: {
     loading: "결과를 불러오는 중...",
@@ -48,7 +48,6 @@ export const COPY = {
     overallScore: "종합 점수",
     outOf100: "100점 만점",
     scoreAnalysis: "점수 분석",
-    domainGuideTitle: "A/B/C/D 영역 안내",
     levelSectionTitle: "현재 수준 해설",
     keyTraits: "주요 특징",
     practicalHeading: "현장 적용 포인트",
@@ -59,7 +58,6 @@ export const COPY = {
     domainNameC: "비판적 검증",
     domainNameD: "윤리와 책임",
     copyLink: "결과 링크 복사",
-    retry: "다시 하기",
     copyDone: "결과 링크를 복사했습니다.",
     print: "인쇄 / PDF 저장",
     scoreLabel: "총점",
@@ -154,6 +152,10 @@ export const COPY = {
       error: "요약 데이터를 불러오지 못했습니다.",
       levelDistribution: "레벨 분포",
       domainAverage: "영역 평균 점수(/25)",
+      genderDistribution: "성별 분포",
+      ageDistribution: "연령 분포",
+      churchSizeDistribution: "교회 규모 분포",
+      regionDistribution: "지역 분포",
       summary: "요약",
       totalAssessments: "제출 완료 수",
       last30Days: "최근 30일 제출",
@@ -163,7 +165,6 @@ export const COPY = {
     }
   },
   common: {
-    levelLabel: "레벨",
-    copyright: "© 2026 onmam.com. All rights reserved."
+    levelLabel: "레벨"
   }
 } as const;

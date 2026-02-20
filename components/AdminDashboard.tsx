@@ -11,14 +11,16 @@ type SummaryData = {
   domainAverages: Record<string, number>;
   weakestDomain: string;
   last30DaysCount: number;
-  averageTotalScore: number;
-  weakestDomainFrequency: Record<string, number>;
-  domainLowCounts: Record<string, number>;
-  ethicsLowCount: number;
-  criticalLowCount: number;
   roleCounts: Record<string, number>;
-  roleAverages: Record<string, number>;
-  scoreBands: Record<string, number>;
+  ministryCounts: Record<string, number>;
+  genderCounts: Record<string, number>;
+  ageGroupCounts: Record<string, number>;
+  churchSizeCounts: Record<string, number>;
+  regionCounts: Record<string, number>;
+  regionInsights: Array<{ label: string; count: number; averageTotalScore: number; weakestDomain: string }>;
+  churchSizeInsights: Array<{ label: string; count: number; averageTotalScore: number; weakestDomain: string }>;
+  roleInsights: Array<{ label: string; count: number; averageTotalScore: number; weakestDomain: string }>;
+  ministryInsights: Array<{ label: string; count: number; averageTotalScore: number; weakestDomain: string }>;
 };
 
 export default function AdminDashboard() {
@@ -69,20 +71,26 @@ export default function AdminDashboard() {
       <AdminCharts
         levelCounts={data.levelCounts}
         domainAverages={data.domainAverages}
-        weakestDomainFrequency={data.weakestDomainFrequency}
-        scoreBands={data.scoreBands}
-        roleAverages={data.roleAverages}
+        roleCounts={data.roleCounts}
+        ministryCounts={data.ministryCounts}
+        genderCounts={data.genderCounts}
+        ageGroupCounts={data.ageGroupCounts}
+        churchSizeCounts={data.churchSizeCounts}
+        regionCounts={data.regionCounts}
       />
-
       <AdminTable
         totalAssessments={data.totalAssessments}
         weakestDomain={data.weakestDomain}
         last30DaysCount={data.last30DaysCount}
         domainAverages={data.domainAverages}
-        averageTotalScore={data.averageTotalScore}
-        ethicsLowCount={data.ethicsLowCount}
-        criticalLowCount={data.criticalLowCount}
-        domainLowCounts={data.domainLowCounts}
+        genderCounts={data.genderCounts}
+        ageGroupCounts={data.ageGroupCounts}
+        churchSizeCounts={data.churchSizeCounts}
+        regionCounts={data.regionCounts}
+        regionInsights={data.regionInsights}
+        churchSizeInsights={data.churchSizeInsights}
+        roleInsights={data.roleInsights}
+        ministryInsights={data.ministryInsights}
       />
     </div>
   );

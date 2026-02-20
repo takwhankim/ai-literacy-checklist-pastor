@@ -12,6 +12,10 @@ model Assessment {
   name         String?
   role         String?
   ministry     String?
+  gender       String?
+  ageGroup     String?
+  churchSize   String?
+  region       String?
   consentAgg   Boolean   @default(true)
   consentShare Boolean   @default(false)
   totalScore   Int?

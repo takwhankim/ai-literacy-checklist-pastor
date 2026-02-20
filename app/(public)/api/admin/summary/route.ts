@@ -4,7 +4,54 @@ import { db } from "@/lib/db";
 import { ADMIN_COOKIE, verifyAdminSessionValue } from "@/lib/auth";
 
 type DomainScores = { A?: number; B?: number; C?: number; D?: number };
-type Flags = { ethics_low?: boolean; critical_low?: boolean };
+type BucketAgg = {
+  count: number;
+  totalScoreSum: number;
+  domainSums: Record<"A" | "B" | "C" | "D", number>;
+};
+
+function addToBucket(
+  map: Record<string, BucketAgg>,
+  key: string,
+  totalScore: number,
+  domainScores: Record<"A" | "B" | "C" | "D", number>
+) {
+  const current = map[key] || {
+    count: 0,
+    totalScoreSum: 0,
+    domainSums: { A: 0, B: 0, C: 0, D: 0 }
+  };
+  current.count += 1;
+  current.totalScoreSum += totalScore;
+  current.domainSums.A += domainScores.A;
+  current.domainSums.B += domainScores.B;
+  current.domainSums.C += domainScores.C;
+  current.domainSums.D += domainScores.D;
+  map[key] = current;
+}
+
+function buildInsightRows(map: Record<string, BucketAgg>) {
+  return Object.entries(map)
+    .map(([label, agg]) => {
+      const avgTotal = agg.totalScoreSum / (agg.count || 1);
+      const domainAvg = {
+        A: agg.domainSums.A / (agg.count || 1),
+        B: agg.domainSums.B / (agg.count || 1),
+        C: agg.domainSums.C / (agg.count || 1),
+        D: agg.domainSums.D / (agg.count || 1)
+      };
+      const weakestDomain = (["A", "B", "C", "D"] as const).reduce((acc, key) =>
+        domainAvg[key] < domainAvg[acc] ? key : acc
+      , "A");
+      return {
+        label,
+        count: agg.count,
+        averageTotalScore: Number(avgTotal.toFixed(2)),
+        weakestDomain
+      };
+    })
+    .sort((a, b) => b.count - a.count);
+}
 
 export async function GET() {
   const cookie = cookies().get(ADMIN_COOKIE)?.value;
@@ -17,51 +64,40 @@ export async function GET() {
     where: { submittedAt: { not: null } },
     select: {
       level: true,
-      role: true,
-      totalScore: true,
       domainScores: true,
-      flags: true,
-      submittedAt: true
+      totalScore: true,
+      submittedAt: true,
+      role: true,
+      ministry: true,
+      gender: true,
+      ageGroup: true,
+      churchSize: true,
+      region: true
     }
   });
 
   const totalAssessments = rows.length;
   const levelCounts: Record<string, number> = { "1": 0, "2": 0, "3": 0, "4": 0 };
   const domainSums: Record<string, number> = { A: 0, B: 0, C: 0, D: 0 };
-  const weakestDomainFrequency: Record<string, number> = { A: 0, B: 0, C: 0, D: 0 };
-  const domainLowCounts: Record<string, number> = { A: 0, B: 0, C: 0, D: 0 };
+  const genderCounts: Record<string, number> = {};
+  const ageGroupCounts: Record<string, number> = {};
+  const churchSizeCounts: Record<string, number> = {};
+  const regionCounts: Record<string, number> = {};
   const roleCounts: Record<string, number> = {};
-  const roleScoreSums: Record<string, number> = {};
-  const scoreBands: Record<string, number> = {
-    "20-44": 0,
-    "45-64": 0,
-    "65-84": 0,
-    "85-100": 0
-  };
+  const ministryCounts: Record<string, number> = {};
 
-  let totalScoreSum = 0;
-  let ethicsLowCount = 0;
-  let criticalLowCount = 0;
+  const regionAgg: Record<string, BucketAgg> = {};
+  const churchSizeAgg: Record<string, BucketAgg> = {};
+  const roleAgg: Record<string, BucketAgg> = {};
+  const ministryAgg: Record<string, BucketAgg> = {};
 
   for (const row of rows) {
     if (row.level) {
       levelCounts[String(row.level)] = (levelCounts[String(row.level)] || 0) + 1;
     }
 
-    const totalScore = row.totalScore || 0;
-    totalScoreSum += totalScore;
-
-    if (totalScore <= 44) scoreBands["20-44"] += 1;
-    else if (totalScore <= 64) scoreBands["45-64"] += 1;
-    else if (totalScore <= 84) scoreBands["65-84"] += 1;
-    else scoreBands["85-100"] += 1;
-
-    const role = row.role?.trim() || "미지정";
-    roleCounts[role] = (roleCounts[role] || 0) + 1;
-    roleScoreSums[role] = (roleScoreSums[role] || 0) + totalScore;
-
     const ds = (row.domainScores || {}) as DomainScores;
-    const domainValues: Record<string, number> = {
+    const domainValues: Record<"A" | "B" | "C" | "D", number> = {
       A: ds.A || 0,
       B: ds.B || 0,
       C: ds.C || 0,
@@ -73,18 +109,24 @@ export async function GET() {
     domainSums.C += domainValues.C;
     domainSums.D += domainValues.D;
 
-    for (const key of ["A", "B", "C", "D"] as const) {
-      if (domainValues[key] < 15) {
-        domainLowCounts[key] += 1;
-      }
-    }
+    const gender = row.gender || "미응답";
+    const ageGroup = row.ageGroup || "미응답";
+    const churchSize = row.churchSize || "미응답";
+    const region = row.region || "미응답";
+    const role = row.role || "미응답";
+    const ministry = row.ministry || "미응답";
+    genderCounts[gender] = (genderCounts[gender] || 0) + 1;
+    ageGroupCounts[ageGroup] = (ageGroupCounts[ageGroup] || 0) + 1;
+    churchSizeCounts[churchSize] = (churchSizeCounts[churchSize] || 0) + 1;
+    regionCounts[region] = (regionCounts[region] || 0) + 1;
+    roleCounts[role] = (roleCounts[role] || 0) + 1;
+    ministryCounts[ministry] = (ministryCounts[ministry] || 0) + 1;
 
-    const weakest = (Object.entries(domainValues).sort((a, b) => a[1] - b[1])[0]?.[0] || "A") as "A" | "B" | "C" | "D";
-    weakestDomainFrequency[weakest] += 1;
-
-    const flags = (row.flags || {}) as Flags;
-    if (flags.ethics_low) ethicsLowCount += 1;
-    if (flags.critical_low) criticalLowCount += 1;
+    const totalScore = row.totalScore ?? (domainValues.A + domainValues.B + domainValues.C + domainValues.D);
+    addToBucket(regionAgg, region, totalScore, domainValues);
+    addToBucket(churchSizeAgg, churchSize, totalScore, domainValues);
+    addToBucket(roleAgg, role, totalScore, domainValues);
+    addToBucket(ministryAgg, ministry, totalScore, domainValues);
   }
 
   const divisor = totalAssessments || 1;
@@ -102,10 +144,6 @@ export async function GET() {
       )
     : "N/A";
 
-  const roleAverages = Object.fromEntries(
-    Object.entries(roleCounts).map(([role, count]) => [role, Number((roleScoreSums[role] / count).toFixed(2))])
-  );
-
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
   const last30DaysCount = rows.filter((r) => (r.submittedAt ? r.submittedAt >= thirtyDaysAgo : false)).length;
@@ -116,13 +154,15 @@ export async function GET() {
     domainAverages,
     weakestDomain,
     last30DaysCount,
-    averageTotalScore: Number((totalScoreSum / divisor).toFixed(2)),
-    weakestDomainFrequency,
-    domainLowCounts,
-    ethicsLowCount,
-    criticalLowCount,
+    genderCounts,
+    ageGroupCounts,
+    churchSizeCounts,
+    regionCounts,
     roleCounts,
-    roleAverages,
-    scoreBands
+    ministryCounts,
+    regionInsights: buildInsightRows(regionAgg),
+    churchSizeInsights: buildInsightRows(churchSizeAgg),
+    roleInsights: buildInsightRows(roleAgg),
+    ministryInsights: buildInsightRows(ministryAgg)
   });
 }
